@@ -1,0 +1,18 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.1
+  aws-s3: circleci/aws-s3@2.0
+
+workflows:
+  deploy_application:
+    jobs:
+      - node/test:
+          version: "15.1"
+          post-steps:
+            - aws-s3/copy:
+                from: dist/
+                to: s3://$S3_BUCKET
+                aws-access-key-id: $AWS_ACCESS_KEY_ID
+                aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+                arguments: --recursive
